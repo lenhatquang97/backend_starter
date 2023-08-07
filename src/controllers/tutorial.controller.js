@@ -3,6 +3,7 @@ const Tutorial = db.tutorials;
 
 exports.create = (req, res) => {
     if (!req.body.title) {
+        console.log("Test on Docker")
         res.status(400).send({ message: "Content can not be empty!"});
         return;
     }

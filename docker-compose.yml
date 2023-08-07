@@ -1,0 +1,17 @@
+#Write compose for mongodb and nodejs
+version: '3'
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - '27017:27017'
+  node:
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - '8122:8122'
+    depends_on:
+      - mongodb
+    command: npm start

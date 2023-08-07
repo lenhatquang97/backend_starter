@@ -1,9 +1,10 @@
+const {postTutorialValidation} = require("../tutorials/validators");
 module.exports = app => {
     const tutorials = require("../controllers/tutorial.controller");
 
     const router = require("express").Router();
 
-    router.post("/", tutorials.create);
+    router.post("/",postTutorialValidation, tutorials.create);
 
     router.get("/", tutorials.findAll);
     router.get("/published", tutorials.findAllPublished);

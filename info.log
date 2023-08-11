@@ -1,0 +1,8 @@
+pma: http://118.102.2.130/zahackathondb/
+db name: db_team_04
+db user: db_team_04
+db pass: F4u!o3LNI6DC
+host: 118.102.2.130
+port: 33306
+ssh command: ssh root@118.102.2.104 -p 2222
+password: F4u!o3LNI6DC

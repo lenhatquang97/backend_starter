@@ -1,14 +1,20 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const { Server } = require("socket.io");
+const io = new Server(app);
 
 const corsOptions = {
-    origin: "http://localhost:8081"
+    origin: "*"
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+io.on('connection', (socket) => {
+    console.log('a user connected');
+  });
 
 require("./src/routes/tutorial.routes")(app);
 

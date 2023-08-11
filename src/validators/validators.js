@@ -2,12 +2,51 @@ const {object, string} = require('yup');
 const postTutorialSchema = object({
     title: string().required(),
 });
+const authHeader="auth";
+const authen=require("../controllers/authen.controller");
+
 const postTutorialValidation = (req, res, next) => {
     try {
-        postTutorialSchema.validateSync(req.body);
+        const jwtToken=req.get(authHeader);
+        if(!jwtToken){
+            var apiMessage={
+                error_code: -103,
+                message: "Permission Exception",
+                data: null
+            };
+            res.status(200).send(apiMessage);
+            return;
+        }
+        const userId=authen.verify(jwtToken);
+        if(userId==null){
+            var apiMessage={
+                error_code: -104,
+                message: "Decode JWT Token fail",
+                data: null
+            };
+            res.status(200).send(apiMessage);
+            return;
+        }
         next();
     } catch (error) {
         res.status(400).send({message: error.message});
     }
 }
-module.exports = {postTutorialValidation};
+
+const getUserId=(req, res)=>{
+    try {
+        const jwtToken=req.get(authHeader);
+        if(!jwtToken){
+            return null;
+        }
+        const userId=authen.verify(jwtToken);
+        if(userId==null){
+            return null;
+        }
+        return userId;
+    } catch (error) {
+        return null;
+    }
+}
+
+module.exports = {postTutorialValidation, getUserId};

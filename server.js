@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const mysql = require('mysql2');
+const {connection} = require("./db.config");
 const app = express();
 const { Server } = require("socket.io");
 const io = new Server(app);
@@ -7,6 +9,13 @@ const io = new Server(app);
 const corsOptions = {
     origin: "*"
 };
+
+connection.promise().connect().then(() => {
+    console.log("Connected to MySQL server!");
+}).catch(err => {
+    console.error("Error connecting to the database", err);
+    process.exit();
+});
 
 app.use(cors(corsOptions));
 app.use(express.json());

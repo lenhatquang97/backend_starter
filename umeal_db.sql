@@ -52,12 +52,13 @@ CREATE TABLE `user` (
 );
 
 CREATE TABLE `booking` (
-  `booking_id` varchar(255) PRIMARY KEY,
+  `booking_id` BIGINT PRIMARY KEY AUTO_INCREMENT,
   `user_id` varchar(255),
   `store_id` varchar(255),
-  `start_time` timestamp,
-  `end_time` timestamp,
-  `is_cancel` boolean DEFAULT false
+  `start_time` BIGINT,
+  `end_time` BIGINT,
+  `is_cancel` boolean DEFAULT false,
+  `is_match` boolean DEFAULT false
 );
 
 ALTER TABLE `meal_history` ADD FOREIGN KEY (`oa_id`) REFERENCES `official_account` (`oa_id`);
@@ -81,3 +82,15 @@ ALTER TABLE `user_likes` ADD FOREIGN KEY (`store_id`) REFERENCES `store` (`store
 ALTER TABLE `booking` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
 
 ALTER TABLE `booking` ADD FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`);
+
+CREATE TABLE `message` (
+  `id` varchar(50) PRIMARY KEY,
+  `sender` varchar(50),
+  `content` text,
+  `replyTo` varchar(50),
+  `createdAt` varchar(50),
+  `type` varchar(50)
+);
+
+
+

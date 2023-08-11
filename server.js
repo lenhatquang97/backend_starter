@@ -1,10 +1,12 @@
 const express = require("express");
 const cors = require("cors");
 const mysql = require('mysql2');
+const http=require("http");
 const {connection} = require("./db.config");
 const app = express();
+const server = http.createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(app);
+const io = new Server(server);
 
 const corsOptions = {
     origin: "*"

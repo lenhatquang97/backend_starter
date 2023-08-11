@@ -1,5 +1,7 @@
-//Localhost: for testing
-//Docker: use service name: mongodb
-module.exports = {
-    url: "mongodb://mongodb:27017/test_db"
-};
+const mysql = require("mysql2");
+exports.connection = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    port: 3306,
+    database: "db_test_04"
+});

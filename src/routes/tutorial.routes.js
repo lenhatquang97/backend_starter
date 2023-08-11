@@ -13,6 +13,10 @@ module.exports = app => {
     router.get("/test", postTutorialValidation, test.test);
 
     router.get("/oa", home.getAllOfficialAccount)
+    router.get("/oa/favorite", home.getFavoriteOA)
+    router.get("/oa/nearest", home.getNearestOA)
+    router.get("/meal_history", home.getMealHistory)
+
 
 
     app.use('/api', router);

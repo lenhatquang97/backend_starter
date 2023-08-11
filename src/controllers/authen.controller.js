@@ -38,6 +38,15 @@ exports.login = (req, res) => {
             };
             res.status(200).send(apiMessage);
         } else {
+            if(body["error"]!=0){
+                apiMessage={
+                    error_code: -body["error"],
+                    message: body["message"],
+                    data: null
+                };
+                res.status(200).send(apiMessage);
+                return;
+            }
             const {name, id, picture}=body;
             var token = jwt.sign({id: id}, secretKey);
             data={
@@ -50,7 +59,7 @@ exports.login = (req, res) => {
                 message: "Success",
                 data: data
             }
-            res.status(200).send(JSON.stringify(apiMessage));
+            res.status(200).send(apiMessage);
         }
     });
 };

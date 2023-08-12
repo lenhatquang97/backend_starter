@@ -1,5 +1,4 @@
 const {connection} = require("../../db.config");
-
 exports.getAllOfficialAccount = (req, res) => {
     connection.query("SELECT * FROM `official_account`", (err, result) => {
         if (err) {
@@ -302,6 +301,4 @@ exports.getAllCategories = (req, res) => {
             res.send({result});
         }
     });
-
-
 }

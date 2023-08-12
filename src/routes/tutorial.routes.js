@@ -1,5 +1,7 @@
 const {postTutorialValidation} = require("../validators/validators");
 const home = require("../controllers/home.controller");
+const express = require("express");
+const path = require("path");
 module.exports = app => {
     const home = require("../controllers/home.controller");
     const authen=require("../controllers/authen.controller");

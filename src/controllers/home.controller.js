@@ -181,7 +181,7 @@ exports.getOfficialAccountById = (req, res) => {
                 };
             }
 
-            if (row.store_id) {
+            if (row.store_id && !mappedResults[oaId].stores.find(store => store.store_id === row.store_id)){
                 mappedResults[oaId].stores.push({
                     store_id: row.store_id,
                     store_name: row.store_name,

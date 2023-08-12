@@ -40,14 +40,9 @@ CREATE TABLE `user_likes` (
 );
 
 CREATE TABLE `user` (
-<<<<<<< HEAD
   `user_id` varchar(255) PRIMARY KEY,
-  `user_name` varchar(255),
-  `user_ava` varchar(255)
-=======
-  `user_id` varchar(255) CHARACTER SET utf8 PRIMARY KEY,
-  `user_name` varchar(255) CHARACTER SET utf8
->>>>>>> 5d55052af2a1d43af57a62e8cf47a1a0049149a5
+  `user_name` varchar(255) CHARACTER SET utf8,
+  `user_ava` varchar(255) CHARACTER SET utf8
 );
 
 CREATE TABLE `booking` (
@@ -88,21 +83,3 @@ ALTER TABLE `user_likes` ADD FOREIGN KEY (`store_id`) REFERENCES `store` (`store
 ALTER TABLE `booking` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
 
 ALTER TABLE `booking` ADD FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`);
-
-<<<<<<< HEAD
-CREATE TABLE `message` (
-  `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-  `sender` varchar(50),
-  `content` text,
-  `replyTo` varchar(50),
-  `createdAt` varchar(50),
-  `type` varchar(50),
-  `conversation_id` varchar(255)
-);
-
-ALTER TABLE `user` 
-ADD COLUMN `user_ava` VARCHAR(255);
-=======
-
-
->>>>>>> 5d55052af2a1d43af57a62e8cf47a1a0049149a5

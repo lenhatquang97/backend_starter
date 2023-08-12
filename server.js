@@ -40,7 +40,8 @@ io.on('connection', (socket) => {
             return;
         }
         const replyTo=booking.getReplyTo(conversationId, user);
-        const insertQuery="INSERT INTO message (id, sender, content, replyTo, createdAt, type) VALUES (0, "+user+", \""+content+"\", "+replyTo+", "+Date.now()+", \""+type+"\")";
+        var createdAt=Date.now();
+        const insertQuery="INSERT INTO message (id, sender, content, replyTo, createdAt, type, conversation_id) VALUES (0, "+user+", \""+content+"\", "+replyTo+", "+createdAt+", \""+type+"\", \""+conversationId+"\")";
         console.log(insertQuery);
             connection.query(insertQuery, function(err, result, fields) {
                 if (err) {
@@ -52,12 +53,15 @@ io.on('connection', (socket) => {
                     console.log(result.insertId);
                     data= {
                         conversationId: conversationId,
-                        id: result.insertQuery, 
+                        id: result.insertId, 
                         content: content,
-                        createdAt: result["createdAt"], 
-                        type: type
+                        createdAt: createdAt, 
+                        type: type,
+                        sender: user
                     };
-                    io.emit(conversationId, data);
+                    console.log(data);
+                    io.emit(user, data);
+                    io.emit(replyTo, data);
                 }
             });
         })

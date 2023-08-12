@@ -48,7 +48,8 @@ CREATE TABLE `user_likes` (
 
 CREATE TABLE `user` (
   `user_id` varchar(255) PRIMARY KEY,
-  `user_name` varchar(255)
+  `user_name` varchar(255),
+  `user_ava` varchar(255)
 );
 
 CREATE TABLE `booking` (
@@ -94,5 +95,5 @@ CREATE TABLE `message` (
   `conversation_id` varchar(255)
 );
 
-
-
+ALTER TABLE `user` 
+ADD COLUMN `user_ava` VARCHAR(255);

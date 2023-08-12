@@ -3,47 +3,55 @@ const authen=require("./authen.controller");
 const booking=require("./booking.controller");
 const {connection} = require("../../db.config");
 
-exports.handleEvent = async (req) => {
-    // return user id to test userId
-    const {token, conversationId, type, content}=req;
-    const user=authen.verify(token);
-    if(user==null){
-        return {
+exports.getAllMessageOfConversation=(req, res)=>{
+    const user=getUserId(req, res);
+    var {conversationId, offset, limit}=req.query;
+    if (!conversationId){
+        res.status(200).send({
             error_code: -1,
-            message: "decode token fail",
+            message: "conservation is empty",
             data: null
-        };
-    }
-    const replyTo=booking.getReplyTo(conversationId, user);
-    const insertQuery="INSERT INTO message (id, sender, content, replyTo, createdAt, type) VALUES (0, "+user+", "+content+", "+replyTo+", "+Date.now()+", "+type+")";
-    console.log(insertQuery);
-        connection.query(insertQuery, function(err, result, fields) {
-            if (err) {
-                // handle error
-                console.log(err);
-                return {
-                    error_code: -1,
-                    message: "Error when putting message",
-                    data: null
-                };
-            }else{
-                 // Your row is inserted you can view  
-                console.log(result.insertId);
-                var apiMessage={
-                    error_code: 0,
-                    message: "Success",
-                    data: {
-                        conversationId: conversationId,
-                        id: result["id"], 
-                        content: content,
-                        createdAt: result["createdAt"], 
-                        type: type
-                    }
-                };
-                return apiMessage;
-            }
         });
-        
-        
-    
-};
+        return;
+    }
+    if(!conversationId.includes(user)){
+        res.status(200).send({
+            error_code: -2,
+            message: "not enough permission",
+            data: null
+        });
+        return;
+    }
+    if(!offset) offset=0;
+    if(!limit) limit=10000;
+    const query="SELECT * FROM message WHERE conversation_id=\""+conversationId+"\" LIMIT "+limit+" OFFSET "+offset;
+    connection.query(query, (err, result, fields) => {
+        if (err) {
+            console.log(err);
+            res.status(200).send({
+                error_code: -3,
+                message: "Error when finding conversation's messages",
+                data: null
+            });
+        } else {
+            console.log(result);
+            data=[];
+            for (const m of result){
+                item={
+                    id: m["id"],
+                    sender: m["sender"],
+                    content: m["content"],
+                    replyTo: null,
+                    createdAt: m["createdAt"],
+                    type: m["type"]
+                };
+                data.push(item);
+            }
+            res.status(200).send({
+                error_code: 0,
+                message: "Success",
+                data: data
+            });
+        }
+    });
+}

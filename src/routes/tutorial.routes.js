@@ -1,9 +1,11 @@
 const {postTutorialValidation} = require("../validators/validators");
+
 module.exports = app => {
     const home = require("../controllers/home.controller");
     const authen=require("../controllers/authen.controller");
     const test=require("../controllers/test.controller");
     const booking=require("../controllers/booking.controller");
+    const message=require("../controllers/message.controller");
 
     const router = require("express").Router();
 
@@ -14,6 +16,12 @@ module.exports = app => {
     router.get("/test", postTutorialValidation, test.test);
 
     router.post("/booking/book", postTutorialValidation, booking.book);
+
+    router.get("/booking/messages", postTutorialValidation, message.getAllMessageOfConversation);
+
+    router.get("/booking/getPartnerInfoFromBooking", postTutorialValidation, booking.getPartnerFromBooking);
+
+    router.get("/booking/getAllUserBooking", postTutorialValidation, booking.getAllBookingOfUser);
 
     router.get("/oa", home.getAllOfficialAccount)
     router.get("/oa/favorite", home.getFavoriteOA)

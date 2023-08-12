@@ -193,7 +193,7 @@ exports.getOfficialAccountById = (req, res) => {
                 });
             }
 
-            if (row.voucher_id) {
+            if (row.voucher_id && !mappedResults[oaId].vouchers.find(store => store.voucher_id === row.voucher_id)) {
                 mappedResults[oaId].vouchers.push({
                     voucher_id: row.voucher_id,
                     voucher_name: row.voucher_name,

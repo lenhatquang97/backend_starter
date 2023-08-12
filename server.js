@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const http=require("http");
-const {connection} = require("./db.config");
+const {pool} = require("./db.config");
 const app = express();
 const server = http.createServer(app);
 const { Server } = require("socket.io");
@@ -11,7 +11,7 @@ const io = new Server(server, {
         methods: ["GET", "POST"]
     }
 });
-const message=require("./src/controllers/message.controller");
+
 const authen=require("./src/controllers/authen.controller");
 const booking=require("./src/controllers/booking.controller");
 
@@ -20,11 +20,13 @@ const corsOptions = {
     origin: "*"
 };
 
-connection.promise().connect().then(() => {
-    console.log("Connected to MySQL server!");
-}).catch(err => {
-    console.error("Error connecting to the database", err);
-    process.exit();
+pool.getConnection((err, connection) => {
+    if(err) {
+        console.log("Error connecting to the database", err);
+    } else {
+        console.log("Successfully connected to the database");
+    }
+    connection.release();
 });
 
 app.use(cors(corsOptions));
@@ -51,7 +53,7 @@ io.on('connection', (socket) => {
         var createdAt=Date.now();
         const insertQuery="INSERT INTO message (id, sender, content, replyTo, createdAt, type, conversation_id) VALUES (0, "+user+", \""+content+"\", "+replyTo+", "+createdAt+", \""+type+"\", \""+conversationId+"\")";
         console.log(insertQuery);
-            connection.query(insertQuery, function(err, result, fields) {
+            pool.query(insertQuery, function(err, result, fields) {
                 if (err) {
                     // handle error
                     console.log(err);

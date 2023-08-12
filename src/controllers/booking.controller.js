@@ -1,5 +1,5 @@
 const {getUserId} = require("../validators/validators");
-const {connection} = require("../../db.config");
+const {pool} = require("../../db.config");
 const main=require("../../server");
 
 exports.getReplyTo=(conversationId, senderId)=>{
@@ -13,7 +13,7 @@ exports.getBooking=(req, res)=>{
     const user=getUserId(req, res);
     const queryGetBooking="SELECT * FROM booking WHERE booking_id="+bookingId;
     console.log(queryGetBooking);
-    connection.query(queryGetBooking, function(err, result, fields) {
+    pool.query(queryGetBooking, function(err, result, _) {
         if (err) {
             // handle error
             res.status(200).send({
@@ -21,10 +21,9 @@ exports.getBooking=(req, res)=>{
                 message: "Error when finding booking",
                 data: null
             });
-            return;
         }else{
             const d=result[0];
-            if(d["user_id"]!=user){
+            if(d["user_id"] !== user){
                 res.status(200).send({
                     error_code: -2,
                     message: "not permission",
@@ -51,7 +50,7 @@ exports.book = (req, res) => {
         const curTime=Date.now();
         const query="SELECT * FROM booking WHERE user_id!="+userId+" AND is_cancel=false AND is_match=false AND store_id=\""+storeId+"\" AND ((start_time>="+startTime+" AND start_time<="+endTime+") OR ("+startTime+">=start_time AND "+startTime+"<=end_time)) AND end_time>"+curTime;
         console.log("query="+query);
-        connection.query(query, (err, result) => {
+        pool.query(query, (err, result) => {
             if (err) {
                 console.log(err);
                 res.status(200).send({
@@ -60,10 +59,10 @@ exports.book = (req, res) => {
                     data: null
                 });
             } else {
-                if (result.length==0){
+                if (result.length===0){
                     // find no matching
                     const insertQuery="INSERT INTO booking (booking_id, user_id, store_id, start_time, end_time, is_cancel, is_match, conversation_id) VALUES (0, "+userId+", \""+storeId+"\", "+startTime+", "+endTime+", false, false, null)";
-                    connection.query(insertQuery, (err, result) => {
+                    pool.query(insertQuery, (err, _) => {
                         if (err) {
                             console.log(err);
                             res.status(200).send({
@@ -71,8 +70,7 @@ exports.book = (req, res) => {
                                 message: "Error when putting booking",
                                 data: null
                             });
-                            return;
-                        } 
+                        }
                     });
                     res.status(200).send({
                         error_code: 0,
@@ -85,7 +83,7 @@ exports.book = (req, res) => {
                     console.log(match);
                     const conversationId=getConversationId(userId, match["user_id"]);
                     const alterQuery="UPDATE booking SET is_match=true, conversation_id=\""+conversationId+"\" WHERE booking_id="+match["booking_id"];
-                    connection.query(alterQuery, (err, result) => {
+                    pool.query(alterQuery, (err, _) => {
                         if (err) {
                             console.log(err);
                             res.status(200).send({
@@ -93,11 +91,10 @@ exports.book = (req, res) => {
                                 message: "Error when updating booking",
                                 data: null
                             });
-                            return;
                         } 
                     });
                     const insertQuery="INSERT INTO booking (booking_id, user_id, store_id, start_time, end_time, is_cancel, is_match, conversation_id) VALUES (0, "+userId+", \""+storeId+"\", "+startTime+", "+endTime+", false, true, \""+conversationId+"\")";
-                    connection.query(insertQuery, (err, result) => {
+                    pool.query(insertQuery, (err, _) => {
                         if (err) {
                             console.log(err);
                             res.status(200).send({
@@ -105,8 +102,7 @@ exports.book = (req, res) => {
                                 message: "Error when putting booking",
                                 data: null
                             });
-                            return;
-                        } 
+                        }
                     });
                     // todo: noti booking is matched
                     const io=main.io;
@@ -139,7 +135,7 @@ exports.getAllBookingOfUser=(req, res)=>{
     if(!limit) limit=100000;
     const user=getUserId(req, res);
     const queryGetBooking="SELECT * FROM booking WHERE user_id="+user;
-    connection.query(queryGetBooking, function(err, result, fields) {
+    pool.query(queryGetBooking, function(err, result, _) {
         if (err) {
             // handle error
             res.status(200).send({
@@ -147,14 +143,12 @@ exports.getAllBookingOfUser=(req, res)=>{
                 message: "Get all user's booking error",
                 data: null
             });
-            return;
         }else{
             res.status(200).send({
                 error_code: 0,
                 message: "Success",
                 data: result
             });
-            return;
         }
     });
 }
@@ -171,7 +165,7 @@ exports.getPartnerFromBooking=(req, res)=>{
         return res;
     }
     const queryGetBooking="SELECT * FROM booking WHERE booking_id="+bookingId;
-    connection.query(queryGetBooking, function(err, result, fields) {
+    pool.query(queryGetBooking, function(err, result, _) {
         if (err) {
             // handle error
             console.log(err);
@@ -180,10 +174,9 @@ exports.getPartnerFromBooking=(req, res)=>{
                 message: "error when find booking",
                 data: null
             });
-            return;
         }else{
             console.log(result);
-            if(result.length==0){
+            if(result.length === 0){
                 res.status(200).send({
                     error_code: -3,
                     message: "no booking has bookingId",
@@ -202,7 +195,7 @@ exports.getPartnerFromBooking=(req, res)=>{
                 });
                 return;
             }
-            if(userInBooking!=user  || !conversationId.includes(user)){
+            if(userInBooking !== user  || !conversationId.includes(user)){
                 res.status(200).send({
                     error_code: -4,
                     message: "nno permission",
@@ -213,8 +206,8 @@ exports.getPartnerFromBooking=(req, res)=>{
             
             const parts=conversationId.split(":");
             var partnerId=parts[0];
-            if(partnerId==user) partnerId=parts[1];
-            if(partnerId==user) {
+            if(partnerId === user) partnerId=parts[1];
+            if(partnerId === user) {
                 console.log("Error "+conversationId);
                 res.status(200).send({
                     error_code: 0,
@@ -225,7 +218,7 @@ exports.getPartnerFromBooking=(req, res)=>{
             }
             
             const queryGetProfile="SELECT * FROM user WHERE user_id="+partnerId;
-            connection.query(queryGetProfile, function(err, result2, fields) {
+            pool.query(queryGetProfile, function(err, result2, _) {
                 if (err) {
                     // handle error
                     console.log(err);
@@ -234,7 +227,6 @@ exports.getPartnerFromBooking=(req, res)=>{
                         message: "error when get profile",
                         data: null
                     });
-                    return;
                 }
                 else{
                     const c=result2[0];
@@ -248,7 +240,6 @@ exports.getPartnerFromBooking=(req, res)=>{
                             user_id: c["user_id"]
                         }
                     });
-                    return;
                 }
             });
         }
@@ -260,11 +251,11 @@ function getConversationId(userId1, userId2){
 }
 
 function compareUserId(userId1, userId2){
-    if(userId1.length!=userId2.length){
+    if(userId1.length !== userId2.length){
         return userId1.length>userId2.length;
     }
     for(var i=0;i<userId1.length;++i){
-        if(userId1[i]!=userId2[i]) return userId1[i]>userId2[i];
+        if(userId1[i] !== userId2[i]) return userId1[i]>userId2[i];
     }
     return false;
 }

@@ -2,7 +2,7 @@ const request = require("request");
 var jwt = require('jsonwebtoken');
 
 const secretKey="DepTraiCoGiLaSai";
-const {connection} = require("../../db.config");
+const {pool} = require("../../db.config");
 
 exports.login = (req, res) => {
     // get access token in request
@@ -50,7 +50,7 @@ exports.login = (req, res) => {
             }
             const {name, id, picture}=body;
             const query="INSERT INTO user(user_id, user_name, user_ava) VALUES (\""+id+"\", \""+name+"\", \""+picture.data.url+"\") ON DUPLICATE KEY UPDATE user_name=\""+name+"\", user_ava=\""+picture.data.url+"\"";
-            connection.query(query, function(err, result, fields) {
+            pool.query(query, function(err, result, fields) {
                 if (err) {
                     // handle error
                     console.log(query);

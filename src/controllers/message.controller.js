@@ -1,7 +1,5 @@
 const {getUserId} = require("../validators/validators");
-const authen=require("./authen.controller");
-const booking=require("./booking.controller");
-const {connection} = require("../../db.config");
+const {pool} = require("../../db.config");
 
 exports.getAllMessageOfConversation=(req, res)=>{
     const user=getUserId(req, res);
@@ -25,7 +23,7 @@ exports.getAllMessageOfConversation=(req, res)=>{
     if(!offset) offset=0;
     if(!limit) limit=10000;
     const query="SELECT * FROM message WHERE conversation_id=\""+conversationId+"\" LIMIT "+limit+" OFFSET "+offset;
-    connection.query(query, (err, result, fields) => {
+    pool.query(query, (err, result, _) => {
         if (err) {
             console.log(err);
             res.status(200).send({

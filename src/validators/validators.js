@@ -1,7 +1,3 @@
-const {object, string} = require('yup');
-const postTutorialSchema = object({
-    title: string().required(),
-});
 const authHeader="auth";
 const authen=require("../controllers/authen.controller");
 

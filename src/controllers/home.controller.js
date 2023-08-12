@@ -1,6 +1,6 @@
-const {connection} = require("../../db.config");
+const {pool} = require("../../db.config");
 exports.getAllOfficialAccount = (req, res) => {
-    connection.query("SELECT * FROM `official_account`", (err, result) => {
+    pool.query("SELECT * FROM `official_account`", (err, result) => {
         if (err) {
             console.log(err);
             res.status(500).send({
@@ -35,7 +35,7 @@ ORDER BY
 LIMIT 10;
     `
 
-    connection.query(queryFavorite, (err, result) => {
+    pool.query(queryFavorite, (err, result) => {
         if (err) {
             console.log(err);
             res.status(500).send({
@@ -82,7 +82,7 @@ ORDER BY
 LIMIT 10;
     `
 
-    connection.query(queryNearest, (err, result) => {
+    pool.query(queryNearest, (err, result) => {
         if (err) {
             console.log(err);
             res.status(500).send({
@@ -116,7 +116,7 @@ ORDER BY
     b.start_time DESC;
     `
 
-    connection.query(queryMealHistory, (err, result) => {
+    pool.query(queryMealHistory, (err, result) => {
         if (err) {
             console.log(err);
             res.status(500).send({
@@ -158,7 +158,7 @@ exports.getOfficialAccountById = (req, res) => {
   LEFT JOIN voucher v ON oa.oa_id = v.oa_id
   WHERE oa.oa_id = "${oa_id}"
 `
-    connection.query(rawQuery, (error, results) => {
+    pool.query(rawQuery, (error, results) => {
         if (error) {
             throw error;
         }
@@ -234,7 +234,7 @@ FROM store s
 JOIN official_account oa ON s.oa_id = oa.oa_id
 WHERE s.store_id = "${store_id}"
     `
-    connection.query(rawQuery, (err, result) => {
+    pool.query(rawQuery, (err, result) => {
         if (err) {
             console.log(err);
             res.status(500).send({
@@ -275,7 +275,7 @@ JOIN store s ON b.store_id = s.store_id
 WHERE b.user_id = "${user_id}"
     `
 
-    connection.query(rawQuery, (err, result) => {
+    pool.query(rawQuery, (err, result) => {
         if (err) {
             console.log(err);
             res.status(500).send({
@@ -291,7 +291,7 @@ exports.getAllCategories = (req, res) => {
     const rawQuery = String.raw`
     SELECT * FROM category
     `
-    connection.query(rawQuery, (err, result) => {
+    pool.query(rawQuery, (err, result) => {
         if (err) {
             console.log(err);
             res.status(500).send({

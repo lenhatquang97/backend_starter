@@ -68,6 +68,8 @@ io.on('connection', (socket) => {
         })
 });
 
+exports.io=io;
+
 require("./src/routes/tutorial.routes")(app);
 
 // set port, listen for requests

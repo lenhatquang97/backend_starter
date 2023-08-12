@@ -84,7 +84,7 @@ ALTER TABLE `booking` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
 ALTER TABLE `booking` ADD FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`);
 
 CREATE TABLE `message` (
-  `id` varchar(50) PRIMARY KEY,
+  `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
   `sender` varchar(50),
   `content` text,
   `replyTo` varchar(50),

@@ -1,6 +1,12 @@
 const {getUserId} = require("../validators/validators");
 const {connection} = require("../../db.config");
 
+exports.getReplyTo=(conversationId, senderId)=>{
+    const parts=conversationId.split(":");
+    if(parts[0]===senderId) return parts[1];
+    return parts[0];
+}
+
 exports.book = (req, res) => {
     var apiMessage;
     try{
@@ -99,3 +105,4 @@ function compareUserId(userId1, userId2){
     }
     return false;
 }
+

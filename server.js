@@ -15,6 +15,7 @@ const message=require("./src/controllers/message.controller");
 const authen=require("./src/controllers/authen.controller");
 const booking=require("./src/controllers/booking.controller");
 
+
 const corsOptions = {
     origin: "*"
 };
@@ -26,7 +27,7 @@ connection.promise().connect().then(() => {
     process.exit();
 });
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

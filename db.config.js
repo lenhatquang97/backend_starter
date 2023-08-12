@@ -1,4 +1,14 @@
 const mysql = require("mysql2");
+<<<<<<< HEAD
+=======
+exports.connection = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    port: 3306,
+    database: "db_test_04",
+});
+//
+>>>>>>> 5d55052af2a1d43af57a62e8cf47a1a0049149a5
 // exports.connection = mysql.createConnection({
 //     host: "localhost",
 //     user: "root",

@@ -1,5 +1,6 @@
 const {getUserId} = require("../validators/validators");
 const {connection} = require("../../db.config");
+const main=require("../../server");
 
 exports.getReplyTo=(conversationId, senderId)=>{
     const parts=conversationId.split(":");
@@ -48,7 +49,7 @@ exports.book = (req, res) => {
         const endTime=req.body["end_time"]; 
         const storeId=req.body["store_id"];
         const curTime=Date.now();
-        const query="SELECT * FROM booking WHERE user_id!="+userId+" AND is_cancel=false AND is_match=false AND store_id="+storeId+" AND ((start_time>="+startTime+" AND start_time<="+endTime+") OR ("+startTime+">=start_time AND "+startTime+"<=end_time)) AND end_time>"+curTime;
+        const query="SELECT * FROM booking WHERE user_id!="+userId+" AND is_cancel=false AND is_match=false AND store_id=\""+storeId+"\" AND ((start_time>="+startTime+" AND start_time<="+endTime+") OR ("+startTime+">=start_time AND "+startTime+"<=end_time)) AND end_time>"+curTime;
         console.log("query="+query);
         connection.query(query, (err, result) => {
             if (err) {
@@ -61,7 +62,7 @@ exports.book = (req, res) => {
             } else {
                 if (result.length==0){
                     // find no matching
-                    const insertQuery="INSERT INTO booking (booking_id, user_id, store_id, start_time, end_time, is_cancel, is_match, conversation_id) VALUES (0, "+userId+", "+storeId+", "+startTime+", "+endTime+", false, false, null)";
+                    const insertQuery="INSERT INTO booking (booking_id, user_id, store_id, start_time, end_time, is_cancel, is_match, conversation_id) VALUES (0, "+userId+", \""+storeId+"\", "+startTime+", "+endTime+", false, false, null)";
                     connection.query(insertQuery, (err, result) => {
                         if (err) {
                             console.log(err);
@@ -95,7 +96,7 @@ exports.book = (req, res) => {
                             return;
                         } 
                     });
-                    const insertQuery="INSERT INTO booking (booking_id, user_id, store_id, start_time, end_time, is_cancel, is_match, conversation_id) VALUES (0, "+userId+", "+storeId+", "+startTime+", "+endTime+", false, true, \""+conversationId+"\")";
+                    const insertQuery="INSERT INTO booking (booking_id, user_id, store_id, start_time, end_time, is_cancel, is_match, conversation_id) VALUES (0, "+userId+", \""+storeId+"\", "+startTime+", "+endTime+", false, true, \""+conversationId+"\")";
                     connection.query(insertQuery, (err, result) => {
                         if (err) {
                             console.log(err);
@@ -107,7 +108,12 @@ exports.book = (req, res) => {
                             return;
                         } 
                     });
-                    
+                    // todo: noti booking is matched
+                    const io=main.io;
+                    io.emit("notify-booking-status-"+match["user_id"], {
+                        booking_id: match["booking_id"],
+                        type: "IS_MATCHED"
+                    });
                     res.status(200).send({
                         error_code: 0,
                         message: "Success",
@@ -188,7 +194,15 @@ exports.getPartnerFromBooking=(req, res)=>{
             const b=result[0];
             const userInBooking=b["user_id"];
             const conversationId=b["conversation_id"];
-            if(userInBooking!=user || !conversationId.includes(user)){
+            if(!conversationId){
+                res.status(200).send({
+                    error_code: 0,
+                    message: "Success",
+                    data: null
+                });
+                return;
+            }
+            if(userInBooking!=user  || !conversationId.includes(user)){
                 res.status(200).send({
                     error_code: -4,
                     message: "nno permission",
@@ -196,10 +210,20 @@ exports.getPartnerFromBooking=(req, res)=>{
                 });
                 return;
             }
-            var partnerId;
+            
             const parts=conversationId.split(":");
-            if(parts[0]===user) partnerId=parts[1];
-            else partnerId=parts[0];
+            var partnerId=parts[0];
+            if(partnerId==user) partnerId=parts[1];
+            if(partnerId==user) {
+                console.log("Error "+conversationId);
+                res.status(200).send({
+                    error_code: 0,
+                    message: "Success",
+                    data: null
+                });
+                return;
+            }
+            
             const queryGetProfile="SELECT * FROM user WHERE user_id="+partnerId;
             connection.query(queryGetProfile, function(err, result2, fields) {
                 if (err) {
@@ -220,7 +244,8 @@ exports.getPartnerFromBooking=(req, res)=>{
                         message: "Success",
                         data: {
                             user_name: c["user_name"],
-                            user_ava: c["user_ava"]
+                            user_ava: c["user_ava"],
+                            user_id: c["user_id"]
                         }
                     });
                     return;

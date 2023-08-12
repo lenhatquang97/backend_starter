@@ -3,7 +3,7 @@ const {pool} = require("../../db.config");
 
 exports.getAllMessageOfConversation=(req, res)=>{
     const user=getUserId(req, res);
-    var {conversationId, offset, limit}=req.query;
+    let {conversationId, offset, limit}=req.query;
     if (!conversationId){
         res.status(200).send({
             error_code: -1,

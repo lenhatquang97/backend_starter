@@ -39,7 +39,7 @@ exports.login = (req, res) => {
             };
             res.status(200).send(apiMessage);
         } else {
-            if(body["error"]!=0){
+            if(body["error"]!==0){
                 apiMessage={
                     error_code: -body["error"],
                     message: body["message"],
@@ -50,7 +50,7 @@ exports.login = (req, res) => {
             }
             const {name, id, picture}=body;
             const query="INSERT INTO user(user_id, user_name, user_ava) VALUES (\""+id+"\", \""+name+"\", \""+picture.data.url+"\") ON DUPLICATE KEY UPDATE user_name=\""+name+"\", user_ava=\""+picture.data.url+"\"";
-            pool.query(query, function(err, result, fields) {
+            pool.query(query, function(err, _, fields) {
                 if (err) {
                     // handle error
                     console.log(query);
@@ -86,8 +86,7 @@ exports.login = (req, res) => {
 exports.verify=(jwtToken)=>{
     try {
         const decoded = jwt.verify(jwtToken, secretKey);
-        const user = decoded["id"];
-        return user;
+        return decoded["id"];
     } catch (err) {
         return null;
     }

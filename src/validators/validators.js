@@ -5,7 +5,7 @@ const postTutorialValidation = (req, res, next) => {
     try {
         const jwtToken=req.get(authHeader);
         if(!jwtToken){
-            var apiMessage={
+            let apiMessage={
                 error_code: -103,
                 message: "Permission Exception",
                 data: null
@@ -15,7 +15,7 @@ const postTutorialValidation = (req, res, next) => {
         }
         const userId=authen.verify(jwtToken);
         if(userId==null){
-            var apiMessage={
+            let apiMessage={
                 error_code: -104,
                 message: "Decode JWT Token fail",
                 data: null
@@ -29,7 +29,7 @@ const postTutorialValidation = (req, res, next) => {
     }
 }
 
-const getUserId=(req, res)=>{
+const getUserId=(req, _)=>{
     try {
         const jwtToken=req.get(authHeader);
         if(!jwtToken){

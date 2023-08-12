@@ -3,8 +3,7 @@ exports.connection = mysql.createConnection({
     host: "localhost",
     user: "root",
     port: 3306,
-    database: "db_team_04",
-    password: "Aa123456"
+    database: "db_test_04",
 });
 //
 // exports.connection = mysql.createConnection({

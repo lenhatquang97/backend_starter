@@ -1,4 +1,5 @@
 const {postTutorialValidation} = require("../validators/validators");
+const home = require("../controllers/home.controller");
 module.exports = app => {
     const home = require("../controllers/home.controller");
     const authen=require("../controllers/authen.controller");
@@ -18,9 +19,12 @@ module.exports = app => {
     router.get("/oa", home.getAllOfficialAccount)
     router.get("/oa/favorite", home.getFavoriteOA)
     router.get("/oa/nearest", home.getNearestOA)
-    router.get("/meal_history", home.getMealHistory)
-
-
+    //oaById?oa_id=1
+    router.get("/oaById", home.getOfficialAccountById)
+    //storeById?store_id=1
+    router.get("/storeById", home.getStoreById)
+    //bookingByUserId?user_id=1
+    router.get("/bookingByUserId", home.getBookingById)
 
     app.use('/api', router);
 };

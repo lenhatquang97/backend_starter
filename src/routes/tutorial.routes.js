@@ -25,6 +25,7 @@ module.exports = app => {
     router.get("/storeById", home.getStoreById)
     //bookingByUserId?user_id=1
     router.get("/bookingByUserId", home.getBookingById)
+    router.get("/getAllCategories", home.getAllCategories)
 
     app.use('/api', router);
 };

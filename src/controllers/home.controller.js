@@ -286,6 +286,22 @@ WHERE b.user_id = "${user_id}"
             res.send({result});
         }
     });
+}
+
+exports.getAllCategories = (req, res) => {
+    const rawQuery = String.raw`
+    SELECT * FROM category
+    `
+    connection.query(rawQuery, (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send({
+                message: "Error retrieving categories"
+            });
+        } else {
+            res.send({result});
+        }
+    });
 
 
 }

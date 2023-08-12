@@ -58,7 +58,8 @@ CREATE TABLE `booking` (
   `start_time` BIGINT,
   `end_time` BIGINT,
   `is_cancel` boolean DEFAULT false,
-  `is_match` boolean DEFAULT false
+  `is_match` boolean DEFAULT false,
+  `conversation_id` varchar(255)
 );
 
 ALTER TABLE `meal_history` ADD FOREIGN KEY (`oa_id`) REFERENCES `official_account` (`oa_id`);
@@ -89,7 +90,8 @@ CREATE TABLE `message` (
   `content` text,
   `replyTo` varchar(50),
   `createdAt` varchar(50),
-  `type` varchar(50)
+  `type` varchar(50),
+  `conversation_id` varchar(255)
 );
 
 

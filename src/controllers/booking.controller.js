@@ -7,8 +7,37 @@ exports.getReplyTo=(conversationId, senderId)=>{
     return parts[0];
 }
 
-exports.cancel=(req, res)=>{
-    
+exports.getBooking=(req, res)=>{
+    const {bookingId}=req.query;
+    const user=getUserId(req, res);
+    const queryGetBooking="SELECT * FROM booking WHERE booking_id="+bookingId;
+    console.log(queryGetBooking);
+    connection.query(queryGetBooking, function(err, result, fields) {
+        if (err) {
+            // handle error
+            res.status(200).send({
+                error_code: -1,
+                message: "Error when finding booking",
+                data: null
+            });
+            return;
+        }else{
+            const d=result[0];
+            if(d["user_id"]!=user){
+                res.status(200).send({
+                    error_code: -2,
+                    message: "not permission",
+                    data: null    
+                });
+                return;
+            }
+            res.status(200).send({
+                error_code: 0,
+                message: "Success",
+                data: d
+            });
+        }
+    });
 }
 
 exports.book = (req, res) => {

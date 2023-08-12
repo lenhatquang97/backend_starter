@@ -22,6 +22,8 @@ module.exports = app => {
 
     router.get("/booking/getAllUserBooking", postTutorialValidation, booking.getAllBookingOfUser);
 
+    router.get("/booking/get",postTutorialValidation, booking.getBooking);
+
     router.get("/oa", home.getAllOfficialAccount)
     router.get("/oa/favorite", home.getFavoriteOA)
     router.get("/oa/nearest", home.getNearestOA)

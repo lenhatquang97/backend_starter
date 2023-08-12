@@ -62,6 +62,16 @@ CREATE TABLE `booking` (
   `conversation_id` varchar(255)
 );
 
+CREATE TABLE `message` (
+  `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+  `sender` varchar(50),
+  `content` text,
+  `replyTo` varchar(50),
+  `createdAt` varchar(50),
+  `type` varchar(50),
+  `conversation_id` varchar(255)
+);
+
 ALTER TABLE `meal_history` ADD FOREIGN KEY (`oa_id`) REFERENCES `official_account` (`oa_id`);
 
 ALTER TABLE `meal_history` ADD FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`);
@@ -83,16 +93,6 @@ ALTER TABLE `user_likes` ADD FOREIGN KEY (`store_id`) REFERENCES `store` (`store
 ALTER TABLE `booking` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
 
 ALTER TABLE `booking` ADD FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`);
-
-CREATE TABLE `message` (
-  `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-  `sender` varchar(50),
-  `content` text,
-  `replyTo` varchar(50),
-  `createdAt` varchar(50),
-  `type` varchar(50),
-  `conversation_id` varchar(255)
-);
 
 
 

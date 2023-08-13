@@ -1,1 +1,1 @@
-scp -r -P 2222 ../backend_starter root@118.102.2.104:/
+scp -r -P 2222 ../backend_starter root@118.102.2.104:/ --exclude {'node_modules','.git'} sourcedir/ destinationdir/

@@ -15,7 +15,18 @@ exports.pool = mysql.createPool({
     database: "db_team_04",
     port: 33306,
     waitForConnections: true,
-    password: "F4u!o3LNI6DC",
     connectionLimit: 10,
     queueLimit: 0
 });
+
+// exports.pool = mysql.createPool({
+//     host: "118.102.2.130",
+//     user: "db_team_04",
+//     database: "db_team_04",
+//     port: 33306,
+//     waitForConnections: true,
+//     password: "F4u!o3LNI6DC",
+//     connectionLimit: 40,
+//     queueLimit: 0,
+//     enableKeepAlive: true,
+// });

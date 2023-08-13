@@ -159,10 +159,6 @@ exports.getOfficialAccountById = (req, res) => {
   WHERE oa.oa_id = "${oa_id}"
 `
     pool.query(rawQuery, (error, results) => {
-        if (error) {
-            throw error;
-        }
-
         // Map the results to a structured format
         const mappedResults = {};
 
